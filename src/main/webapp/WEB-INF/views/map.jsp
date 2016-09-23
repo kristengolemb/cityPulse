@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="com.jkmsteam.citypulse.*" %>
+<%@ page import="com.jkmsteam.citypulse.*"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-	
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
@@ -18,7 +18,6 @@ html, body {
 #map {
 	height: 100%;
 }
-
 </style>
 
 <head>
@@ -28,6 +27,7 @@ html, body {
 	var="bootstrapCss" />
 <link href="${bootstrapCss}" rel="stylesheet" />
 <link href="${coreCss}" rel="stylesheet" />
+<script src="<c:url value="/resources/js/jQuery.js" />"></script>
 </head>
 <body>
 
@@ -42,10 +42,12 @@ html, body {
 		//This example requires the Places library. Include the libraries=places
 		//parameter when you first load the API. For example:
 		//<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
-		var data = JSON.parse('${jsonData}'); 
+		var data = JSON.parse('${jsonData}');
+
 		var map;
 		var infowindow;
 		// console.log(data);
+
 		function initMap() {
 			var pyrmont = {
 				lat : 42.335376,
@@ -54,7 +56,7 @@ html, body {
 
 			map = new google.maps.Map(document.getElementById('map'), {
 				center : pyrmont,
-				zoom : 15
+				zoom : 16
 			});
 
 			//if we choose to show traffic, use these two lines
@@ -83,28 +85,32 @@ html, body {
 			var marker = new google.maps.Marker({
 				map : map,
 				position : place.geometry.location
-			
+
 			});
 			var deadRating = 0;
+			var loudRating = 0;
 			if (data[place.id]) {
 				deadRating = data[place.id].dead;
+				loudRating = data[place.id].loud;
 			}
-//console.log(dataRating);
-			var infoContent = place.name + "<button class='btn btn-info'" +
-				"onclick=\"location.href='/citypulse/vote?ratetype=dead&placeId=" + place.id + "'\">dead " + deadRating +"</button>";
-			
-			google.maps.event
-					.addListener(
-							marker,
-							'click',
-							function() {
-								var content = infoContent;
-								infowindow.setContent(content);
-								infowindow.open(map, this);
-							});
+			//console.log(dataRating);
+			var infoContent = place.name
+					+ "<button class='btn btn-info'"
+					+ "onclick=\"location.href='/citypulse/vote?ratetype=dead&placeId="
+					+ place.id
+					+ "'\">dead "
+					+ deadRating
+					+ "</button><button class='btn btn-info'"
+					+ "onclick=\"location.href='/citypulse/vote?ratetype=loud&placeId="
+					+ place.id + "'\">loud " + loudRating + "</button>";
+
+			google.maps.event.addListener(marker, 'click', function() {
+				var content = infoContent;
+				infowindow.setContent(content);
+				infowindow.open(map, this);
+			});
 		}
 
-		
 		function saveRating(data) {
 			alert(data.id);
 			submitVote(data.id);

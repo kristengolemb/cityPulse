@@ -34,10 +34,10 @@ public class HomeController {
 		logger.info("Welcome home! The client locale is {}.", locale);
 
 		List<Rating> counts = RatingsDAO.getAllRatings();
-		
-		//create hashmap of ratings for all place IDs in database
-		Map <String, Rating> ratingsMap = new HashMap<String, Rating>();
-		
+
+		// create hashmap of ratings for all place IDs in database
+		Map<String, Rating> ratingsMap = new HashMap<String, Rating>();
+
 		for (Rating rating : counts) {
 			ratingsMap.put(rating.getPlaceId(), rating);
 			System.out.println(rating);
@@ -45,8 +45,7 @@ public class HomeController {
 		Gson gson = new Gson();
 		String data = gson.toJson(ratingsMap);
 		System.out.println(data);
-		model.addAttribute("jsonData", data); 
-		
+		model.addAttribute("jsonData", data);
 
 		return "map";
 	}

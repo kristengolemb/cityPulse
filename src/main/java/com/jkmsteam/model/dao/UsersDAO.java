@@ -25,6 +25,7 @@ public class UsersDAO {
 		 
 		 // pass in setup file for Product class
 		 configuration.addResource("user.hbm.xml");
+
 		 
 		 // Since version 4.x, service registry is being used
 		 ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().
@@ -85,7 +86,7 @@ public class UsersDAO {
 		 hibernateSession.getTransaction().begin();
 		 
 		 //deprecated method & unsafe cast
-		 List<User> users = hibernateSession.createQuery("FROM User where fbId='"+ id +"'").list();
+		 List<User> users = hibernateSession.createQuery("FROM "+User.class.getName()+" where id="+ id +"").list();
 		 if (users.isEmpty())
 			 users.add(new User());
 		 
