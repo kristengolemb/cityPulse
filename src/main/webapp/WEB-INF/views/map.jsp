@@ -30,7 +30,7 @@ html, body {
 <script src="<c:url value="/resources/js/jQuery.js" />"></script>
 </head>
 <body>
-
+	
 	<div id="map"></div>
 	<!-- Replace the value of the key parameter with your own API key. -->
 
@@ -47,31 +47,86 @@ html, body {
 		var map;
 		var infowindow;
 		// console.log(data);
+				
+// 		function initMap() {
+// 			  if (navigator.geolocation) { //GEO LOCATION, FINDS USERS LOCATION
+// 				    navigator.geolocation.getCurrentPosition(function(position) {
 
-		function initMap() {
-			var pyrmont = {
-				lat : 42.335376,
-				lng : -83.050000
-			};
+// 			var pyrmont = {
+// 			        lat: position.coords.latitude,
+// 			        lng: position.coords.longitude
+// 			};
 
-			map = new google.maps.Map(document.getElementById('map'), {
-				center : pyrmont,
-				zoom : 16
-			});
+// 			map = new google.maps.Map(document.getElementById('map'), {
+// 				center : pyrmont,
+// 				zoom : 16
+// 			});
 
-			//if we choose to show traffic, use these two lines
-			//var trafficLayer = new google.maps.TrafficLayer();
-			//trafficLayer.setMap(map);
+// 			//if we choose to show traffic, use these two lines
+// 			//var trafficLayer = new google.maps.TrafficLayer();
+// 			//trafficLayer.setMap(map);
 
-			infowindow = new google.maps.InfoWindow();
-			var service = new google.maps.places.PlacesService(map);
-			service.nearbySearch({
-				location : pyrmont,
-				radius : 3000,
-				type : [ 'bar' ]
-			}, callback);
-		}
 
+// 			infowindow = new google.maps.InfoWindow();
+// 			var service = new google.maps.places.PlacesService(map);
+// 			service.nearbySearch({
+// 				location : myLocation,
+// 				radius : 3000,
+// 				type : [ 'bar' ]
+// 			}, callback);
+function initMap() {
+
+  if (navigator.geolocation) { //GEO LOCATION, FINDS USERS LOCATION
+    navigator.geolocation.getCurrentPosition(function(position) {
+
+      pos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      }
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: myLocation,
+        zoom: 13
+      });
+      infoWindow = new google.maps.InfoWindow({
+        map: map
+      });
+      map.setCenter(pos);
+      var myLocation = pos; //Sets variable to geo location long and lat co-ordinates.
+		var myPosition = new google.maps.Marker({
+			position : myLocation,
+			icon : {
+				path : google.maps.SymbolPath.CIRCLE,
+				scale : 5
+			},
+			draggable : true,
+			map : map
+		});
+		infowindow = new google.maps.InfoWindow();
+      var service = new google.maps.places.PlacesService(map);
+      service.nearbySearch({
+        location: myLocation, //Uses geolocation to find the following
+        radius: 10000,
+        types: ['bar']
+      }, callback);
+      
+      
+    })
+  };
+
+
+
+}
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			  
 		function callback(results, status) {
 			if (status === google.maps.places.PlacesServiceStatus.OK) {
 				for (var i = 0; i < results.length; i++) {
